@@ -8,6 +8,7 @@ import com.pranshudev.spendlytics.util.jwtUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,8 @@ public class ProfileService {
     private final ModelMapper modelMapper;
     private final jwtUtil JwtUtil;
     private final ProfileRepository profileRepository;
+    @Value("${app.activation.url}")
+    private String activationURL ;
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
 
         ProfileEntity newProfile = toEntity(profileDTO);
@@ -36,7 +39,7 @@ public class ProfileService {
         newProfile = profileRepository.save(newProfile);
 
         // Send activation email
-        String activationUrl = "http://localhost:8080/api/v1.0/activate?token=" + newProfile.getActivationToken();
+        String activationUrl = activationURL+ "/api/v1.0/activate?token=" + newProfile.getActivationToken();
         String subject = " Activate Your Spendlytics Account";
         // Create an HTML body with a clickable link or button
         String body = "<html><body>" +
